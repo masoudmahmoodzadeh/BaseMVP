@@ -5,14 +5,14 @@ import android.view.LayoutInflater;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.masoud.base_mvp_module.interfaces.AppContract;
+import com.masoud.base_mvp_module.interfaces.IAppContract;
 import com.masoud.base_mvp_module.interfaces.IBaseRepository;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
 
 public abstract class MVP_AppController extends MultiDexApplication
-        implements AppContract, IBaseRepository {
+        implements IAppContract, IBaseRepository {
 
     private int widthScreen = -1, heightScreen = -1;
     private LayoutInflater layoutInflater;

@@ -15,24 +15,26 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.masoud.base_mvp_module.interfaces.IAppContract;
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
+import com.masoud.base_mvp_module.interfaces.IBackPressedButton;
+import com.masoud.base_mvp_module.interfaces.IBaseRepository;
+import com.masoud.base_mvp_module.permission.enums.SheriffPermission;
+import com.masoud.base_mvp_module.permission.interfaces.PermissionListener;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import ir.masoud.base.general.AnimationUtils;
-import ir.masoud.base.general.BaseUtils;
-import ir.masoud.base.general.data.IBaseRepository;
-import ir.masoud.base.general.permissionmadeeasy.intefaces.PermissionListener;
-import ir.masoud.base.interfaces.IBackPressedButton;
-import ir.masoud.base.mvp.interfaces.MVP_IApp;
-import ir.masoud.base.mvp.interfaces.MVP_IBaseView;
+
 
 /**
  * Created by Masoud pc on 8/5/2018.
  */
 public abstract class MVP_BaseFragment extends Fragment
-        implements MVP_IBaseView, MVP_IApp, IBackPressedButton {
+        implements IBaseContract.View, IAppContract, IBackPressedButton {
+
+    public static final String TAG = "MVP_BaseFragment";
 
     protected MVP_BaseActivity baseActivity;
     private View rootView;
@@ -51,7 +53,7 @@ public abstract class MVP_BaseFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(getRootView(), container, false);
+        rootView = inflater.inflate(getLayoutId(), container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
         return rootView;
@@ -194,7 +196,6 @@ public abstract class MVP_BaseFragment extends Fragment
         return getBaseActivity().provideLayoutInflater();
     }
 
-    @Override
     public void log(String nameClass, String methodName, Exception error) {
 
         getBaseActivity().log(nameClass, methodName, error);
@@ -207,7 +208,7 @@ public abstract class MVP_BaseFragment extends Fragment
 
     // // // // // abstract methods
 
-    public abstract int getRootView();
+    public abstract int getLayoutId();
 
     public abstract void initPresenter();
 
@@ -223,13 +224,6 @@ public abstract class MVP_BaseFragment extends Fragment
     }
 
     public FragmentManager provideFragmentManager() {
-
-//        FragmentManager fragmentManager;
-
-//        if (getActivity() instanceof MVP_BaseActivity)
-//        else
-//            fragmentManager = getActivity().getSupportFragmentManager();
-
         return baseActivity.provideFragmentManager();
 
     }
@@ -268,7 +262,7 @@ public abstract class MVP_BaseFragment extends Fragment
         } catch (Exception e) {
 
 
-            log(getClass().getSimpleName(), getBaseActivity().getApplicationController().provideUtils().getMethodName(), e);
+            log(TAG, provideUtils().getMethodName(), e);
         }
     }
 
@@ -294,12 +288,6 @@ public abstract class MVP_BaseFragment extends Fragment
                                     boolean isAddToBackStack) {
 
         getBaseActivity().transactionFragment(viewContainerID, destinationFragment, isAddToBackStack);
-
-    }
-
-    public void requestPermissions(String[] permissions, int requestCode, PermissionListener permissionListener) throws Exception {
-
-        getBaseActivity().requestPermissions(permissions, requestCode, permissionListener);
 
     }
 
@@ -363,6 +351,11 @@ public abstract class MVP_BaseFragment extends Fragment
         return baseActivity.hasPermission(permission);
     }
 
+    public void requestPermission(int requestCode,
+                                  PermissionListener permissionListener,
+                                  SheriffPermission... permission) {
+        baseActivity.requestPermission(requestCode, permissionListener, permission);
+    }
 
     public void share_intent(String link, String title) {
 

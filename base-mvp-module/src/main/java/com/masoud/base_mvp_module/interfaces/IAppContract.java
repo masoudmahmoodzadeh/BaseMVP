@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
-public interface AppContract {
+public interface IAppContract {
 
     boolean isNetworkConnected();
 

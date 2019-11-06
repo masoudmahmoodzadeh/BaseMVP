@@ -16,15 +16,12 @@
 package com.masoud.base_mvp_module;
 
 
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
+import com.masoud.base_mvp_module.interfaces.IBaseRepository;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
-import ir.masoud.base.general.BaseUtils;
-import ir.masoud.base.general.data.IBaseRepository;
-import ir.masoud.base.mvp.interfaces.MVP_IBasePresenter;
-import ir.masoud.base.mvp.interfaces.MVP_IBaseView;
 
-
-public class MVP_BasePresenter<V extends MVP_IBaseView> implements MVP_IBasePresenter<V> {
+public class MVP_BasePresenter<V extends IBaseContract.View> implements IBaseContract.Presenter<V> {
 
 
     private final IBaseRepository appDataManager;

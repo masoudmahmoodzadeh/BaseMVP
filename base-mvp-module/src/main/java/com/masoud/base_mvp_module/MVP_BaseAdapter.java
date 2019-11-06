@@ -8,21 +8,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ir.masoud.base.general.data.IBaseRepository;
-import ir.masoud.base.interfaces.OnCallbackItemClickRecycler;
-import ir.masoud.base.mvp.interfaces.MVP_IBaseView;
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
+import com.masoud.base_mvp_module.interfaces.IBaseRepository;
+import com.masoud.base_mvp_module.interfaces.IClickItemRecyclerView;
+
 
 public abstract class MVP_BaseAdapter extends
         RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements MVP_IBaseView {
+        implements IBaseContract.View {
 
-    protected MVP_IBaseView mvp_iBaseView;
+    protected IBaseContract.View mvp_iBaseView;
     protected IBaseRepository iBaseRepository;
     protected View rowView;
 
-    private OnCallbackItemClickRecycler onCallbackItemClickRecycler;
+    private IClickItemRecyclerView iClickItemRecyclerView;
 
-    public MVP_BaseAdapter(MVP_IBaseView mvp_iBaseView,
+    public MVP_BaseAdapter(IBaseContract.View mvp_iBaseView,
                            IBaseRepository iBaseRepository) {
         this.mvp_iBaseView = mvp_iBaseView;
         this.iBaseRepository = iBaseRepository;
@@ -41,12 +42,12 @@ public abstract class MVP_BaseAdapter extends
             @Override
             public void onClick(View view) {
 
-                if (onCallbackItemClickRecycler != null) {
+                if (iClickItemRecyclerView != null) {
 
                     RecyclerView recyclerView = (RecyclerView) parent;
                     int position = recyclerView.getChildAdapterPosition(view);
 
-                    onCallbackItemClickRecycler.onItemClick(view, position);
+                    iClickItemRecyclerView.onItemClick(view, position);
                 }
 
 
@@ -123,8 +124,8 @@ public abstract class MVP_BaseAdapter extends
 
     // // // // // Others
 
-    public MVP_BaseAdapter setClickListener(OnCallbackItemClickRecycler onCallbackItemClickRecycler) {
-        this.onCallbackItemClickRecycler = onCallbackItemClickRecycler;
+    public MVP_BaseAdapter setClickListener(IClickItemRecyclerView iClickItemRecyclerView) {
+        this.iClickItemRecyclerView = iClickItemRecyclerView;
         return this;
     }
 

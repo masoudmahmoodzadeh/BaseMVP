@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 import com.masoud.base_mvp_module.MVP_BaseActivity;
 
-public interface BaseContract {
+public interface IBaseContract {
 
     interface View {
 
@@ -32,7 +32,8 @@ public interface BaseContract {
 
         String getUniqueTag();
     }
-    interface Presenter<V extends BaseContract.View> {
+
+    interface Presenter<V extends IBaseContract.View> {
 
         void onAttach(V mvpView);
 
@@ -43,6 +44,11 @@ public interface BaseContract {
         BaseUtils getUtils();
     }
 
+    interface Dialog extends View {
+
+        void dismissDialog(String tag);
+
+    }
 
 
 }

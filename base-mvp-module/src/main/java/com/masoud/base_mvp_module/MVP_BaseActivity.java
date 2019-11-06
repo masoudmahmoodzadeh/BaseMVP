@@ -1,6 +1,8 @@
 package com.masoud.base_mvp_module;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +22,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.masoud.base_mvp_module.interfaces.BaseContract;
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
 import com.masoud.base_mvp_module.interfaces.IBaseRepository;
+import com.masoud.base_mvp_module.permission.enums.SheriffPermission;
+import com.masoud.base_mvp_module.permission.helper.Sheriff;
+import com.masoud.base_mvp_module.permission.interfaces.PermissionListener;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 import com.masoud.base_mvp_module.utils.MVP_FragmentUtils;
@@ -30,11 +36,12 @@ import butterknife.Unbinder;
 
 
 public abstract class MVP_BaseActivity extends AppCompatActivity
-        implements BaseContract.View, MVP_BaseFragment.Callback{
+        implements IBaseContract.View, MVP_BaseFragment.Callback {
 
     private FragmentManager fragmentManager;
     private String uniqueTag = "";
     private Unbinder unbinder;
+    private Sheriff sheriffPermission;
 
 
     @Override
@@ -259,7 +266,7 @@ public abstract class MVP_BaseActivity extends AppCompatActivity
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
                 message, Snackbar.LENGTH_SHORT);
         View sbView = snackbar.getView();
-        TextView textView =  sbView
+        TextView textView = sbView
                 .findViewById(R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, android.R.color.white));
         snackbar.show();
@@ -281,6 +288,33 @@ public abstract class MVP_BaseActivity extends AppCompatActivity
     public void share_intent(String link, String title) {
 
         provideUtils().share_intent(this, link, title);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public boolean hasPermission(String permission) {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestPermission(int requestCode,
+                                  PermissionListener permissionListener,
+                                  SheriffPermission... permission) {
+
+        sheriffPermission = Sheriff.Builder()
+                .with(this)
+                .requestCode(requestCode)
+                .setPermissionResultCallback(permissionListener)
+                .askFor(permission)
+                .rationalMessage("These Permissions are required to work app with all functions.")
+                .build();
+        sheriffPermission.requestPermissions();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        sheriffPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 

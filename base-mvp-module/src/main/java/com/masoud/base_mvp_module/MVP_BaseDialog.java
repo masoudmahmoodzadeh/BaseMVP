@@ -1,14 +1,17 @@
 package com.masoud.base_mvp_module;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
@@ -17,22 +20,23 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.masoud.base_mvp_module.interfaces.IAppContract;
+import com.masoud.base_mvp_module.interfaces.IBackPressedButton;
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
+import com.masoud.base_mvp_module.interfaces.IBaseRepository;
+import com.masoud.base_mvp_module.permission.enums.SheriffPermission;
+import com.masoud.base_mvp_module.permission.interfaces.PermissionListener;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import ir.masoud.base.general.AnimationUtils;
-import ir.masoud.base.general.BaseUtils;
-import ir.masoud.base.general.data.IBaseRepository;
-import ir.masoud.base.general.permissionmadeeasy.intefaces.PermissionListener;
-import ir.masoud.base.mvp.interfaces.MVP_IApp;
-import ir.masoud.base.mvp.interfaces.MVP_IBaseDialogView;
-import ir.masoud.base.mvvm.interfaces.IBackPressed;
 
 
 public abstract class MVP_BaseDialog extends DialogFragment
-        implements MVP_IBaseDialogView, MVP_IApp, IBackPressed {
+        implements IBaseContract.Dialog, IAppContract, IBackPressedButton {
+
+    public static final String TAG = "MVP_BaseDialog";
 
     protected View rooView;
     protected MVP_BaseActivity baseActivity;
@@ -71,7 +75,7 @@ public abstract class MVP_BaseDialog extends DialogFragment
     public void onStart() {
         super.onStart();
 
-        provideUtils().normalDialogStyle(getDialog(), getWidthDevice(), heightScreen);
+        normalDialogStyle(getWidthDevice(), heightScreen);
 
 
     }
@@ -87,7 +91,6 @@ public abstract class MVP_BaseDialog extends DialogFragment
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-
         return rooView;
 
     }
@@ -97,7 +100,7 @@ public abstract class MVP_BaseDialog extends DialogFragment
         super.onViewCreated(view, savedInstanceState);
 
         unbinder = ButterKnife.bind(this, view);
-        setTag(getClass().getSimpleName().concat("_").concat(String.valueOf(System.currentTimeMillis())));
+        setTag(TAG.concat("_").concat(String.valueOf(System.currentTimeMillis())));
 
 
     }
@@ -206,9 +209,11 @@ public abstract class MVP_BaseDialog extends DialogFragment
         getBaseActivity().showSnackBar(message);
     }
 
-    public void requestPermissions(String[] permissions, int requestCode, PermissionListener permissionListener) throws Exception {
+    public void requestPermissions(int requestCode,
+                                   PermissionListener permissionListener,
+                                   SheriffPermission... permission) {
 
-        getBaseActivity().requestPermissions(permissions, requestCode, permissionListener);
+        getBaseActivity().requestPermission(requestCode, permissionListener, permission);
 
     }
 
@@ -244,8 +249,12 @@ public abstract class MVP_BaseDialog extends DialogFragment
         return getBaseActivity().provideLayoutInflater();
     }
 
-    @Override
     public void log(String nameClass, String methodName, Exception error) {
+
+        getBaseActivity().log(nameClass, methodName, error);
+    }
+
+    public void log(String nameClass, String methodName, String error) {
 
         getBaseActivity().log(nameClass, methodName, error);
     }
@@ -289,7 +298,7 @@ public abstract class MVP_BaseDialog extends DialogFragment
 
                             if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-                                backPressed();
+                                backPressedButton(null);
 
 
                                 return true;
@@ -305,8 +314,7 @@ public abstract class MVP_BaseDialog extends DialogFragment
 
         } catch (Exception e) {
 
-            log(getClass().getSimpleName(), getBaseActivity().getApplicationController().provideUtils()
-                    .getMethodName(), e);
+            log(TAG, provideUtils().getMethodName(), e);
         }
     }
 
@@ -325,4 +333,40 @@ public abstract class MVP_BaseDialog extends DialogFragment
     public LifecycleOwner getLifecycleOwner() {
         return this;
     }
+
+    public void normalDialogStyle(int width, int height) {
+
+        try {
+
+            Dialog dialog = getDialog();
+
+            if (dialog != null) {
+
+                Window window = dialog.getWindow();
+
+                if (window != null) {
+
+                    WindowManager.LayoutParams wlp = window.getAttributes();
+                    wlp.alpha = 0.9f;
+                    wlp.gravity = Gravity.BOTTOM;
+                    wlp.y = 15;
+                    wlp.width = width - 30;
+                    if (height != -1)
+                        wlp.height = height;
+
+                    window.getAttributes().windowAnimations = R.style.animation_dialog_normal;
+
+                    window.setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                    window.setAttributes(wlp);
+                }
+            }
+        } catch (Exception e) {
+
+            log(TAG, provideUtils().getMethodName(), e);
+        }
+
+    }
+
 }

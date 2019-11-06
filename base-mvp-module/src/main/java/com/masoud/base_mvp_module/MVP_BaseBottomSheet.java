@@ -3,9 +3,12 @@ package com.masoud.base_mvp_module;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -14,19 +17,20 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.masoud.base_mvp_module.interfaces.IAppContract;
+import com.masoud.base_mvp_module.interfaces.IBackPressedButton;
+import com.masoud.base_mvp_module.interfaces.IBaseContract;
+import com.masoud.base_mvp_module.interfaces.IBaseRepository;
+import com.masoud.base_mvp_module.permission.enums.SheriffPermission;
+import com.masoud.base_mvp_module.permission.interfaces.PermissionListener;
 import com.masoud.base_mvp_module.utils.AnimationUtils;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
-import ir.masoud.base.general.AnimationUtils;
-import ir.masoud.base.general.BaseUtils;
-import ir.masoud.base.general.data.IBaseRepository;
-import ir.masoud.base.general.permissionmadeeasy.intefaces.PermissionListener;
-import ir.masoud.base.mvp.interfaces.MVP_IApp;
-import ir.masoud.base.mvp.interfaces.MVP_IBaseDialogView;
-import ir.masoud.base.mvvm.interfaces.IBackPressed;
 
 public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment implements
-        MVP_IBaseDialogView, MVP_IApp, IBackPressed {
+        IBaseContract.Dialog, IAppContract, IBackPressedButton {
+
+    public static final String TAG = "MVP_BaseBottomSheet";
 
     protected MVP_BaseActivity baseActivity;
     private int heightScreen = -1;
@@ -65,7 +69,7 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
 
         rooView = View.inflate(getActivity(), getRootView(), null);
         dialog.setContentView(rooView);
-        setTag(getClass().getSimpleName().concat("_").concat(String.valueOf(System.currentTimeMillis())));
+        setTag(TAG.concat("_").concat(String.valueOf(System.currentTimeMillis())));
 
 
         BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(((View) rooView.getParent()));
@@ -85,7 +89,7 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
             });
 
             if (heightScreen == -1)
-                mBottomSheetBehavior.setPeekHeight(getHeightDevice()/2);
+                mBottomSheetBehavior.setPeekHeight(getHeightDevice() / 2);
             else
                 mBottomSheetBehavior.setPeekHeight(heightScreen);
 
@@ -105,8 +109,7 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
     public void onResume() {
         super.onResume();
 
-        getBaseActivity().getApplicationController().provideUtils().normalDialogStyle(getDialog()
-                , getBaseActivity().getApplicationController().provideUtils().getScreenSize(true), -1);
+        normalDialogStyle(getBaseActivity().getApplicationController().provideUtils().getScreenSize(true), -1);
 
 
         onClick();
@@ -198,9 +201,11 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
         getBaseActivity().showSnackBar(message);
     }
 
-    public void requestPermissions(String[] permissions, int requestCode, PermissionListener permissionListener) throws Exception {
+    public void requestPermissions(int requestCode,
+                                   PermissionListener permissionListener,
+                                   SheriffPermission... permission) {
 
-        getBaseActivity().requestPermissions(permissions, requestCode, permissionListener);
+        getBaseActivity().requestPermission(requestCode, permissionListener, permission);
 
     }
 
@@ -235,11 +240,16 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
         return getBaseActivity().provideLayoutInflater();
     }
 
-    @Override
     public void log(String nameClass, String methodName, Exception error) {
 
         getBaseActivity().log(nameClass, methodName, error);
     }
+
+    public void log(String nameClass, String methodName, String error) {
+
+        getBaseActivity().log(nameClass, methodName, error);
+    }
+
 
     @Override
     public AnimationUtils animationUtils() {
@@ -284,7 +294,7 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
 
                             if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-                                backPressed();
+                                backPressedButton(null);
 
                                 dismissDialog(getUniqueTag());
 
@@ -301,8 +311,7 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
 
         } catch (Exception e) {
 
-            log(getClass().getSimpleName(), getBaseActivity().getApplicationController().provideUtils()
-                    .getMethodName(), e);
+            log(TAG, provideUtils().getMethodName(), e);
         }
     }
 
@@ -322,4 +331,42 @@ public abstract class MVP_BaseBottomSheet extends BottomSheetDialogFragment impl
     public LifecycleOwner getLifecycleOwner() {
         return this;
     }
+
+
+    public void normalDialogStyle(int width, int height) {
+
+        try {
+
+            Dialog dialog = getDialog();
+
+            if (dialog != null) {
+
+                Window window = dialog.getWindow();
+
+                if (window != null) {
+
+                    WindowManager.LayoutParams wlp = window.getAttributes();
+                    wlp.alpha = 0.9f;
+                    wlp.gravity = Gravity.BOTTOM;
+                    wlp.y = 15;
+                    wlp.width = width - 30;
+                    if (height != -1)
+                        wlp.height = height;
+
+                    window.getAttributes().windowAnimations = R.style.animation_dialog_normal;
+
+                    window.setSoftInputMode(
+                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                    window.setAttributes(wlp);
+                }
+            }
+        } catch (Exception e) {
+
+            log(TAG, provideUtils().getMethodName(), e);
+        }
+
+    }
+
+
 }

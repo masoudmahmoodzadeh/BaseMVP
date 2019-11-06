@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 
 public class BaseUtils {
 
+    public final String TAG = "BaseUtils";
+
     private Context context;
     private PersianDate persianDate;
 
@@ -77,7 +79,7 @@ public class BaseUtils {
 
         } catch (Exception e) {
 
-            log(getClass().getSimpleName(), "getMethodName", e.toString());
+            log(TAG, "getMethodName", e.toString());
         }
 
         return "getMethodName";
@@ -371,7 +373,7 @@ public class BaseUtils {
             fileInputStream.close();
 
         } catch (Exception e) {
-            log(getClass().getSimpleName(), getMethodName(), e);
+            log(TAG, getMethodName(), e);
         }
 
         return image;
@@ -416,7 +418,7 @@ public class BaseUtils {
 
         } catch (Exception e) {
 
-            log(getClass().getSimpleName(), getMethodName(), e);
+            log(TAG, getMethodName(), e);
 
         }
     }

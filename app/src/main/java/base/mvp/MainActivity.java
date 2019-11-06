@@ -1,14 +1,47 @@
 package base.mvp;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.masoud.base_mvp_module.MVP_BaseActivity;
+import com.masoud.base_mvp_module.utils.AnimationUtils;
 
-import android.os.Bundle;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MVP_BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public AnimationUtils getAnimationTransition() {
+        return null;
+    }
+
+    @Override
+    public void createActionbar() {
+
+    }
+
+    @Override
+    public void initPresenter() {
+
+    }
+
+    @Override
+    public void initView() {
+
+    }
+
+    @Override
+    public void setSlideMenu() {
+
+    }
+
+    @Override
+    public void onClick() {
+
+    }
+
+    @Override
+    public MVP_BaseActivity getBaseActivity() {
+        return this;
     }
 }
