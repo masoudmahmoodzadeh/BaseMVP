@@ -26,8 +26,8 @@ public class MVP_FragmentUtils {
             if (builder.destinationFragment.getTag() == null)
                 tag = builder.destinationFragment.getClass().getSimpleName().concat("_").concat(String.valueOf(System.currentTimeMillis()));
 
-            if (builder.MVVMAnimationUtils != null) {
-                trans.setCustomAnimations(builder.MVVMAnimationUtils.getEnterAnimation(), builder.MVVMAnimationUtils.getExitAnimation());
+            if (builder.animationUtils != null) {
+                trans.setCustomAnimations(builder.animationUtils.getEnterAnimation(), builder.animationUtils.getExitAnimation());
             }
             trans.replace(builder.containerViewID, builder.destinationFragment, tag);
 
@@ -49,7 +49,7 @@ public class MVP_FragmentUtils {
         private MVP_BaseFragment destinationFragment;
         private boolean isAddToBackStack;
         private FragmentManager fragmentManager;
-        private AnimationUtils MVVMAnimationUtils;
+        private AnimationUtils animationUtils;
         private int containerViewID;
 
 
@@ -69,8 +69,8 @@ public class MVP_FragmentUtils {
             return this;
         }
 
-        public Builder setMVVMAnimationUtils(AnimationUtils MVVMAnimationUtils) {
-            this.MVVMAnimationUtils = MVVMAnimationUtils;
+        public Builder setMVVMAnimationUtils(AnimationUtils animationUtils) {
+            this.animationUtils = animationUtils;
             return this;
 
         }

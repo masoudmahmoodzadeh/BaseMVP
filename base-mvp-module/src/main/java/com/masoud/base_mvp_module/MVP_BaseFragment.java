@@ -32,7 +32,7 @@ import butterknife.Unbinder;
  * Created by Masoud pc on 8/5/2018.
  */
 public abstract class MVP_BaseFragment extends Fragment
-        implements IBaseContract.View, IAppContract, IBackPressedButton {
+        implements IBaseContract.View, IBackPressedButton {
 
     public static final String TAG = "MVP_BaseFragment";
 
@@ -173,25 +173,19 @@ public abstract class MVP_BaseFragment extends Fragment
         return false;
     }
 
-    @Override
     public BaseUtils provideUtils() {
         return getBaseActivity().provideUtils();
     }
 
-    @Override
     public int getWidthDevice() {
 
         return getBaseActivity().getWidthDevice();
     }
-
-    @Override
     public int getHeightDevice() {
 
         return getBaseActivity().getHeightDevice();
 
     }
-
-    @Override
     public LayoutInflater provideLayoutInflater() {
         return getBaseActivity().provideLayoutInflater();
     }
@@ -201,7 +195,6 @@ public abstract class MVP_BaseFragment extends Fragment
         getBaseActivity().log(nameClass, methodName, error);
     }
 
-    @Override
     public AnimationUtils animationUtils() {
         return getBaseActivity().animationUtils();
     }

@@ -41,6 +41,8 @@ public interface IBaseContract {
 
         void log(String nameClass, String methodName, Exception error);
 
+        void log(String nameClass, String methodName, String error);
+
         BaseUtils getUtils();
     }
 

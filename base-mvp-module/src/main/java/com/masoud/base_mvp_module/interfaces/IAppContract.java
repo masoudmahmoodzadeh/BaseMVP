@@ -18,4 +18,6 @@ public interface IAppContract {
     LayoutInflater provideLayoutInflater();
 
     AnimationUtils animationUtils();
+
+    IBaseRepository provideRepository();
 }

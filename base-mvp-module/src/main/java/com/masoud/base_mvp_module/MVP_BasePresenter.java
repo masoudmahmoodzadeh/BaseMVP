@@ -21,14 +21,15 @@ import com.masoud.base_mvp_module.interfaces.IBaseRepository;
 import com.masoud.base_mvp_module.utils.BaseUtils;
 
 
-public class MVP_BasePresenter<V extends IBaseContract.View> implements IBaseContract.Presenter<V> {
+public class MVP_BasePresenter<V extends IBaseContract.View> implements
+        IBaseContract.Presenter<V> {
 
 
-    private final IBaseRepository appDataManager;
+    private final IBaseRepository repository;
     private V mMvpView;
 
-    public MVP_BasePresenter(IBaseRepository appDataManager) {
-        this.appDataManager = appDataManager;
+    public MVP_BasePresenter(IBaseRepository repository) {
+        this.repository = repository;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class MVP_BasePresenter<V extends IBaseContract.View> implements IBaseCon
         return mMvpView != null;
     }
 
-    public V getMvpView() {
+    public V getView() {
         return mMvpView;
     }
 
@@ -54,7 +55,7 @@ public class MVP_BasePresenter<V extends IBaseContract.View> implements IBaseCon
     }
 
     public IBaseRepository getRepository() {
-        return appDataManager;
+        return repository;
     }
 
 
@@ -68,6 +69,13 @@ public class MVP_BasePresenter<V extends IBaseContract.View> implements IBaseCon
 
     @Override
     public void log(String nameClass, String methodName, Exception error) {
+
+        if (mMvpView != null && mMvpView.getBaseActivity() != null)
+            getUtils().log(nameClass, methodName, error);
+    }
+
+    @Override
+    public void log(String nameClass, String methodName, String error) {
 
         if (mMvpView != null && mMvpView.getBaseActivity() != null)
             getUtils().log(nameClass, methodName, error);

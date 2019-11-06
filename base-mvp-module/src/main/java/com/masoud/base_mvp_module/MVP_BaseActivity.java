@@ -240,7 +240,7 @@ public abstract class MVP_BaseActivity extends AppCompatActivity
 
     public IBaseRepository repository() {
 
-        return getApplicationController();
+        return getApplicationController().provideRepository();
     }
 
     public View getView() {

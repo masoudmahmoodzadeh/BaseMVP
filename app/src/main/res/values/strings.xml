@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BaseMVP</string>
+    <string name="splash_activity">SplashActivity</string>
+    <string name="main_activity">MainActivity</string>
 </resources>
