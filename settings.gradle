@@ -1,0 +1,2 @@
+include ':app', ':base-mvp-module'
+rootProject.name='BaseMVP'
