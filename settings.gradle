@@ -1,2 +1,2 @@
-include ':app', ':base-mvp-module'
+include ':app', ':mvp-module'
 rootProject.name='BaseMVP'
