@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "base.mvp"
+        applicationId "masoud.java.test.mvp"
         minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
